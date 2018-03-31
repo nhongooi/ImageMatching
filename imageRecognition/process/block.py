@@ -1,7 +1,7 @@
 
 import numpy as np
 from imageRecognition.util.FileUtil import iscolor, size_checker
-
+from imageRecognition.util.errors import DifferentBlockCountError, NullImageError, TooSmallImageError
 
 def blockify(image, block_count=16):
     """ Divide image into blocks x blocks matrix,
@@ -17,13 +17,14 @@ def blockify(image, block_count=16):
         Returns
         ----------------
         1D array of averaged blocks"""
+    if image is None:
+        raise NullImageError
     if size_checker(image, block_count) is False:
-        raise Exception
+        raise TooSmallImageError
 
     image_avg = []
-
-    height = image.shape[0] / block_count
-    width = image.shape[1] / block_count
+    height = image.shape[0] // block_count
+    width = image.shape[1] // block_count
 
     for row in range(block_count):
         upper = row * height
@@ -42,9 +43,8 @@ def blockify(image, block_count=16):
                 lower = (row+1) * height
                 right = (col+1) * width
 
-            image_block = image[left:right, upper:lower]
+            image_block = image[upper:lower, left : right]
             image_avg.append(avg_block(image_block))
-
     return image_avg
 
 
@@ -69,11 +69,14 @@ def avg_block(image):
 def __avg_color(image):
     """ Average each channel in the image
 
-        Returns a 3 value tuple of average"""
-    channel_R = np.average(image[:, 0])
-    channel_G = np.average(image[:, 1])
-    channel_B = np.average(image[:, 2])
-    return (channel_R, channel_G, channel_B)
+        Returns
+        -------
+        a 3 value tuple of average"""
+    # split image into 3 channels
+    channel_r = np.average(image[:, :, 0])
+    channel_g = np.average(image[:, :, 1])
+    channel_b = np.average(image[:, :, 2])
+    return (channel_r, channel_g, channel_b)
 
 
 def __avg_grey(image):
@@ -81,8 +84,7 @@ def __avg_grey(image):
 
         return duplicate of the intensity averaged
         in 3 identical value """
-    channel_I = np.average(image)
-    return (channel_I, channel_I, channel_I)
+    return (np.average(image))
 
 
 def diff(imageA, imageB):
@@ -97,13 +99,13 @@ def diff(imageA, imageB):
         ---------------
         a float between 0.0 - 1.0 with 1 indicate perfect match"""
     if len(imageA) != len(imageB):
-        raise Exception
+        raise DifferentBlockCountError
 
     if imageA is None:
-        raise Exception
+        raise NullImageError
 
     abs_diff = 0
-    num_channels = 3
+    num_channels = len(imageA[0])
     for A, B in zip(imageA, imageB):
         abs_diff += __diff_block(A, B) / num_channels
 
@@ -113,7 +115,24 @@ def diff(imageA, imageB):
 
     return 1 - result
 
+
 def __diff_block(blockA, blockB):
+    """ Determines if image is grey or color to determine
+        color of grey diff function to use
+    
+        Parameters
+        -----------
+        blockA, blockB - calculated average block by blockify
+
+        Return
+        ----------
+        positive float of the differences"""
+    if len(blockA) == 3:
+        return __diff_block_color(blockA, blockB)
+    return __diff_block_grey(blockA, blockB)
+
+
+def __diff_block_color(blockA, blockB):
     """ Calculate the absolute differences between two block
         of averages
 
@@ -123,7 +142,24 @@ def __diff_block(blockA, blockB):
 
         Return
         ----------
-        Positive difference number"""
+        positive float of the differences"""
     rA, gA, bA = blockA
     rB, gB, bB = blockB
-    return abs(rA - rB) + abs(gA - gB) + abs(bA - bB)
+    diff_r = abs(rA - rB) / rA
+    diff_g = abs(gA - gB) / gA
+    diff_b = abs(bA - bB) / bA
+    return diff_r + diff_g + diff_b
+
+
+def __diff_block_grey(blockA, blockB):
+    """ Calculate the absolute differences between two block
+            of averages
+
+            Parameters
+            -----------
+            blockA, blockB - calculated average block by blockify
+
+            Return
+            ----------
+            positive float of the differences"""
+    return abs(blockA[0] - blockB[0]) / blockA[0]

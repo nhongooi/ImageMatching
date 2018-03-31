@@ -1,7 +1,8 @@
 from cv2 import imread
+import logging
 
 
-def size_checker(blocksize, image):
+def size_checker(image, blocksize):
     """ Check minimum dimension of image
 
         Parameters
@@ -12,9 +13,9 @@ def size_checker(blocksize, image):
         Return
         -----------
         boolean if pass larger than 4x4"""
-    width, height = image.size
-
-    if (width/blocksize) >= 4 and (height/blocksize) >= 4:
+    height = len(image)
+    width = len(image[1])
+    if (width/blocksize) >= 2 and (height/blocksize) >= 2:
         return True
     return False
 
@@ -32,8 +33,8 @@ def open_img(path):
 
     try:
         image = imread(path)
-    except OSError:
-        print("Given file is not an image file")
+    except IOError as e:
+        logging.info("File not found", e, path)
     else:
         return image
 
@@ -46,7 +47,7 @@ def iscolor(image):
         ---------
         Boolean"""
     # color image has 3 channels, RGB.
-    if len(image[1, 1]) == 3:
+    if image.shape[2] == 3:
         return True
 
     return False

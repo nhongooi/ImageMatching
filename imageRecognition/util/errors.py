@@ -1,10 +1,15 @@
 
+class DifferentBlockCountError(Exception):
+    def __init__(self, err):
+        Exception.__init__(self,"Image blocks count is not the same").format(err)
+        self.error = err
 
-# TODO do something with the error
-class InvalidBlockSizeError(Exception):
-    def __init__(self, errors):
-        super().__init__("Image blocks number not the same")
+class NullImageError(Exception):
+    def __init__(self, err):
+        Exception.__init__(self, "None image found").format(err)
+        self. error = err
 
-        self.errors = errors
-
-class
+class TooSmallImageError(Exception):
+    def __init__(self, err):
+        Exception.__init__(self, "Image too small to blockify").format(err)
+        self.error = err
