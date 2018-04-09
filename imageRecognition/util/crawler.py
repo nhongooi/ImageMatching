@@ -5,12 +5,12 @@ from os.path import isfile, isdir, join
 
 class Crawler:
     HIDDEN = u"(\/\..*)"
-    IMAGE_FORMAT = u"(\.jpeg|\.bmp|\.png)"
-    ARCHIVE_FORMAT = u"(\.cbr|\.cbz|\.pdf|\.epub)"
+    IMAGE_FORMAT = u"(\.jpeg|\.jpg|\.bmp|\.png)"
+    ARCHIVE_FORMAT = u"(\.cbr|\.cbz|\.pdf)"
 
     # https://stackoverflow.com/questions/43580/how-to-find-the-mime-type-of-a-file-in-python
     # alternative use to identify file type, but it needs another python lib
-    def __init__(self, ignore='hidden', fileType='image'):
+    def __init__(self, ignore='hidden', filetype='image'):
         """ Init a file crawler that can recusively itterate through a
             directory and list all file
 
@@ -27,7 +27,7 @@ class Crawler:
         else:
             self.ignore = ignore
 
-        if fileType is 'image':
+        if filetype is 'image':
             self.fileType = self.IMAGE_FORMAT
         else:
             self.fileType = self.ARCHIVE_FORMAT
@@ -45,7 +45,7 @@ class Crawler:
             list of all files in path, locally"""
         image_search = re.compile(self.fileType, re.U)
         return [f for f in listdir(path) if isfile(join(path, f))
-                                        and image_search.search(f)]
+                                         and image_search.search(f)]
 
     #https://stackoverflow.com/questions/120656/directory-listing-in-python
     def crawl_recur(self, path):
@@ -62,15 +62,14 @@ class Crawler:
             list of all files in path"""
         file_list = []
         if not isdir(path):
-            raise Exception
-
+            raise NotADirectoryError
+        # use regex to remove ignore and files not wanting
         ignore_search = re.compile(self.ignore, re.U)
         image_search = re.compile(self.fileType, re.U)
-        for dir, subdirs, files in walk(path):
-            if ignore_search.search(dir):
+        for dirname, subdirs, files in walk(path):
+            if ignore_search.search(dirname):
                 continue
             for file in files:
                 if image_search.search(file):
-                    file_list.append(join(dir, file))
-
+                    file_list.append(join(dirname, file))
         return file_list
