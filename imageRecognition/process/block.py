@@ -1,8 +1,9 @@
 
 import numpy as np
-from imageRecognition.util.FileUtil import iscolor, size_checker
+from imageRecognition.util.FileUtil import iscolor, isAcceptableSize
 from imageRecognition.util.errors import DifferentBlockCountError, NullImageError, TooSmallImageError
-
+# this whole module will be replaced with a C module to increase
+# efficiency
 def blockify(image, block_count=16):
     """ Divide image into blocks x blocks matrix,
         each block pieces of the image and average
@@ -18,14 +19,17 @@ def blockify(image, block_count=16):
         ----------------
         1D array of averaged blocks"""
     if image is None:
-        raise NullImageError
-    if size_checker(image, block_count) is False:
-        raise TooSmallImageError
+        raise NullImageError(image)
+    if isAcceptableSize(image, block_count) is False:
+        raise TooSmallImageError(image, block_count)
 
     image_avg = []
+    # size of average block
+    # block on the edge will have slightly bigger block due
+    # to flooring divide
     height = image.shape[0] // block_count
     width = image.shape[1] // block_count
-
+    # loop through blocks horizontally and vertically
     for row in range(block_count):
         upper = row * height
         for col in range(block_count):
@@ -99,10 +103,10 @@ def diff(imageA, imageB):
         ---------------
         a float between 0.0 - 1.0 with 1 indicate perfect match"""
     if len(imageA) != len(imageB):
-        raise DifferentBlockCountError
+        raise DifferentBlockCountError(len(imageA), len(imageB))
 
     if imageA is None:
-        raise NullImageError
+        raise NullImageError(imageA)
 
     abs_diff = 0
     num_channels = len(imageA[0])

@@ -1,6 +1,7 @@
 
 import unittest
 import numpy as np
+from os import path
 from imageRecognition.util.FileUtil import open_img
 from imageRecognition.process.block import blockify, diff
 
@@ -55,6 +56,3 @@ class TestBlock(unittest.TestCase):
         result = diff(imgA_avg, imgB_avg)
         self.assertNotEqual(result, 1)
         self.assertGreater(result, .95)
-
-if __name__ == "__main__":
-    unittest.main()
