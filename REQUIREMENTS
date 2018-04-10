@@ -1,0 +1,8 @@
+numpy
+opencv-python >=3.4.0.12
+rarfile == 3.0
+os
+logging
+unittest
+zipfile
+curses
