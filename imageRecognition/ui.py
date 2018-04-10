@@ -5,7 +5,7 @@ HEADER = "Image Matching Menu"
 BOTTOM_HEADER = "Press 'Q' to quit; 'E' To select an option"
 
 IMAGING_OPTION = {'title': "Type of Imaging", 'choice': ['Matching', 'Templating']}
-SEARCH_OPTION = {'title': "Search File Type", 'choice': ['archive', 'image']}
+SEARCH_OPTION = {'title': "Search File Type", 'choice': ['Archive', 'Image']}
 PATH_INPUT = 'PATH:'
 TEMPLATE_INPUT = "TEMPLATE PATH:"
 MAX_USER_LEN = 260
