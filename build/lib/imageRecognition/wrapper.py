@@ -1,8 +1,7 @@
 
-from cv2 import imread
-
 from imageRecognition.process import block, template
 from imageRecognition.util import extract, crawler, FileUtil
+from imageRecognition.out import formater
 
 class ImageWrapper():
     """ Wrap all image processing functionality"""
@@ -13,13 +12,13 @@ class ImageWrapper():
         self.path = path
         self.search_filetype = search
         self.template_path = template
-        self.fuzzy_percentage = fuzzy / 100
+        self.fuzzy_percentage = fuzzy
         self.return_path = return_path
 
     def run_wrapper(self):
         """ Runs imaging processing type"""
         if self.type is 'Matching':
-            if self.search_filetype is 'archive':
+            if self.search_filetype is 'Archive':
                 self.path = self.__archive_extract()
 
             images = self.__get_image()
@@ -70,7 +69,8 @@ class ImageWrapper():
         blocks = []
 
         for image in image_list:
-                blocks.append((image, block.blockify(FileUtil.open_img(image))))
+            with FileUtil.open_img(image) as i:
+                blocks.append((image, block.blockify(image=i)))
 
         return blocks
 
@@ -97,9 +97,8 @@ class ImageWrapper():
         for imageA in block_list:
             for index in range(next_not_touch_index,block_list_len):
                 imageB = block_list[index]
-                result = float(block.diff(imageA[1], imageB[1]))
+                result = int(block.diff(imageA[1], imageB[1]))
                 if result >= self.fuzzy_percentage:
-                    result = "%.2f" % float(block.diff(imageA[1], imageB[1]))
                     compare_result.append((imageA[0],
                                            imageB[0],
                                            result))

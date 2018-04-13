@@ -1,0 +1,7 @@
+numpy
+opencv-python>=3.4.0.12
+rarfile
+docopt
+
+[test]
+pytest

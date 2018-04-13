@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: imageRegcognition
+Version: 0.1
+Summary: match duplicate images
+Home-page: UNKNOWN
+Author: Tim Nguyen
+Author-email: tug56656@temple.edu
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Operating System :: POSIX :: Linux
+Requires-Python: ==3.6
+Provides-Extra: test

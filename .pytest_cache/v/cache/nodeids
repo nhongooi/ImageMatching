@@ -1,0 +1,6 @@
+[
+  "imageRecognition/test/test_Fileutil.py::TestFileutil::()::test_open_img",
+  "imageRecognition/test/test_Fileutil.py::TestFileutil::()::test_iscolor",
+  "imageRecognition/test/test_Fileutil.py::TestFileutil::()::test_acceptablesize",
+  "imageRecognition/test/test_formater.py::TestFormater::()::test_format_result"
+]
