@@ -29,7 +29,7 @@ setup(
     
     entry_points={
         'console_scripts': [
-            'imageRecognition=main:main',
+            'imageRecognition=imageRecognition.__main__:main',
         ],
     },
 )

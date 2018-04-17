@@ -20,7 +20,7 @@ class Extractor:
             self.mode = mode
         # TODO find better cache path
         if cache_dir is None:
-            self.cache = "./.cache/extractPath/"
+            self.cache = "./cache/extractPath/"
         else:
             self.cache = cache_dir
 

@@ -7,13 +7,22 @@ from imageRecognition import __usage__ as usage
 from imageRecognition import __version__ as version
 from imageRecognition import wrapper
 from imageRecognition.out import formater
+from imageRecognition.util.FileUtil import clean_path
 
 PROCESS = ['Matching', 'Templating']
 FILETYPE = ['archive', 'image']
 
 
 def clean_args(args):
-    """ run matching given by args"""
+    """ Strip user args and determine user choosen function
+
+        Param
+        -------
+        args - docopt args
+
+        Returns
+        --------
+        a wrapper to run user commands"""
     # default values
     ret = True
     process_type = None
@@ -23,14 +32,18 @@ def clean_args(args):
     template_path = None
     # check if path exist as dir
     if not isvaliddir(args['<path>']):
+        print("incorrect path: ", args['<path>'])
         ret = False
+
     # general args
     cleaned_path = clean_path(args['<path>'])
     if args['--fuzzy']:
         try:
             fuzzy = int(args['--fuzzy'])
         except TypeError:
-            return_value = False
+            print("non-numerical fuzzy threshold: ", args['--fuzzy'])
+            ret = False
+
     if args['--return'] and isvaliddir(args['--return']):
         result_path = clean_path(args['--return'])
 
@@ -40,13 +53,19 @@ def clean_args(args):
         filetype = FILETYPE[1]
         if args['--search'] and args['--search'] in FILETYPE:
             filetype = args['--search']
+        else:
+            print("Incorrect search type: ", args['--search'])
+            ret = False
     elif args['template']:
         process_type = PROCESS[1]
         if args['<template_path>'] and path.isfile(args['<template_path>']):
             template_path = clean_path(args['<template_path>'])
         else:
+            print("Incorrect Template path", args['<template_path>'])
             ret = False
+
     else:
+        print("No process\n")
         ret = False
 
     if not ret:
@@ -63,15 +82,6 @@ def isvaliddir(user_path):
         return False
 
 
-def clean_path(user_path):
-    """ Get absolute path"""
-    if not user_path:
-        return user_path
-    fixed_path = path.expanduser(user_path)
-    fixed_path = path.abspath(user_path)
-    return fixed_path
-
-
 def main():
     result = None
     args = docopt(usage, version=version)
@@ -83,6 +93,7 @@ def main():
     if user_wrapper:
         result = user_wrapper.run_wrapper()
     else:
+        print("input incorrect")
         return False
     if result:
         formater.format_result(result, user_wrapper.return_path)

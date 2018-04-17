@@ -54,6 +54,3 @@ class TestCrawler(unittest.TestCase):
         for a, b in zip(file_list, test_list):
             self.assertTrue(b in a)
         self.assertEqual(len(file_list), len(test_list))
-
-if __name__ == "__main__":
-    unittest.main()

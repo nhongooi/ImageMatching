@@ -1,6 +1,4 @@
 
-from cv2 import imread
-
 from imageRecognition.process import block, template
 from imageRecognition.util import extract, crawler, FileUtil
 
@@ -19,8 +17,8 @@ class ImageWrapper():
     def run_wrapper(self):
         """ Runs imaging processing type"""
         if self.type is 'Matching':
-            if self.search_filetype is 'archive':
-                self.path = self.__archive_extract()
+            if self.search_filetype == 'archive':
+                self.path = FileUtil.clean_path(self.__archive_extract())
 
             images = self.__get_image()
             blocks = self.__blockify_image_list(images)
@@ -28,8 +26,9 @@ class ImageWrapper():
 
         # UI only gave two option, so it cant be anything else
         else:
-            self.__template_wrapper()
-            return None
+            images = self.__get_image()
+            match_list = template.template_match(self.template_path, images, self.fuzzy_percentage)
+            return match_list
 
     def __archive_extract(self):
         """ Create the necessary environment to extract and return the path
@@ -108,6 +107,3 @@ class ImageWrapper():
             next_not_touch_index += 1
 
         return compare_result
-
-    def __template_wrapper(self):
-        pass

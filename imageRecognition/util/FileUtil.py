@@ -1,6 +1,6 @@
 import logging
 from cv2 import imread
-
+from os import path
 
 def open_img(path):
     """ Open an image given path
@@ -52,3 +52,12 @@ def isAcceptableSize(image, blocksize):
     if (width/blocksize) >= 2 and (height/blocksize) >= 2:
         return True
     return False
+
+
+def clean_path(user_path):
+    """ Get absolute path"""
+    if not user_path:
+        return user_path
+    fixed_path = path.expanduser(user_path)
+    fixed_path = path.abspath(fixed_path)
+    return fixed_path

@@ -1,10 +1,13 @@
 
+
+import logging
 import numpy as np
 from imageRecognition.util.FileUtil import iscolor, isAcceptableSize
 from imageRecognition.util.errors import DifferentBlockCountError, NullImageError, TooSmallImageError
+
 # this whole module will be replaced with a C module to increase
 # efficiency
-def blockify(image, block_count=16):
+def blockify(image, block_count=25):
     """ Divide image into blocks x blocks matrix,
         each block pieces of the image and average
         each channel for each block
@@ -19,8 +22,10 @@ def blockify(image, block_count=16):
         ----------------
         1D array of averaged blocks"""
     if image is None:
+        logging.error("Null image:",image, block_count)
         raise NullImageError(image)
     if isAcceptableSize(image, block_count) is False:
+        logging.warning("blocksize:", block_count, " image size: ", image.shape)
         raise TooSmallImageError(image, block_count)
 
     image_avg = []
@@ -147,12 +152,21 @@ def __diff_block_color(blockA, blockB):
         Return
         ----------
         positive float of the differences"""
+    result = 0
     rA, gA, bA = blockA
     rB, gB, bB = blockB
-    diff_r = abs(rA - rB) / rA
-    diff_g = abs(gA - gB) / gA
-    diff_b = abs(bA - bB) / bA
-    return diff_r + diff_g + diff_b
+    diff_r = abs(rA - rB)
+    diff_g = abs(gA - gB)
+    diff_b = abs(bA - bB)
+
+    if diff_r > 0:
+        result += (diff_r / rA)
+    if diff_g > 0:
+        result += (diff_g / gA)
+    if diff_b > 0:
+        result += (diff_b / bA)
+
+    return result
 
 
 def __diff_block_grey(blockA, blockB):

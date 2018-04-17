@@ -1,7 +1,8 @@
 
+from cv2 import imread
+
 from imageRecognition.process import block, template
 from imageRecognition.util import extract, crawler, FileUtil
-from imageRecognition.out import formater
 
 class ImageWrapper():
     """ Wrap all image processing functionality"""
@@ -12,14 +13,14 @@ class ImageWrapper():
         self.path = path
         self.search_filetype = search
         self.template_path = template
-        self.fuzzy_percentage = fuzzy
+        self.fuzzy_percentage = fuzzy / 100
         self.return_path = return_path
 
     def run_wrapper(self):
         """ Runs imaging processing type"""
         if self.type is 'Matching':
-            if self.search_filetype is 'Archive':
-                self.path = self.__archive_extract()
+            if self.search_filetype == 'archive':
+                self.path = FileUtil.clean_path(self.__archive_extract())
 
             images = self.__get_image()
             blocks = self.__blockify_image_list(images)
@@ -27,8 +28,9 @@ class ImageWrapper():
 
         # UI only gave two option, so it cant be anything else
         else:
-            self.__template_wrapper()
-            return None
+            images = self.__get_image()
+            match_list = template.template_match(self.template_path, images, self.fuzzy_percentage)
+            return match_list
 
     def __archive_extract(self):
         """ Create the necessary environment to extract and return the path
@@ -69,8 +71,7 @@ class ImageWrapper():
         blocks = []
 
         for image in image_list:
-            with FileUtil.open_img(image) as i:
-                blocks.append((image, block.blockify(image=i)))
+                blocks.append((image, block.blockify(FileUtil.open_img(image))))
 
         return blocks
 
@@ -97,8 +98,9 @@ class ImageWrapper():
         for imageA in block_list:
             for index in range(next_not_touch_index,block_list_len):
                 imageB = block_list[index]
-                result = int(block.diff(imageA[1], imageB[1]))
+                result = float(block.diff(imageA[1], imageB[1]))
                 if result >= self.fuzzy_percentage:
+                    result = "%.2f" % float(block.diff(imageA[1], imageB[1]))
                     compare_result.append((imageA[0],
                                            imageB[0],
                                            result))
@@ -107,6 +109,3 @@ class ImageWrapper():
             next_not_touch_index += 1
 
         return compare_result
-
-    def __template_wrapper(self):
-        pass
