@@ -1,8 +1,10 @@
 """ extract first image of cbz, cbr, pdf, etc and cache them to match"""
-from os import path
+import re, io, sys
+from os import path, makedirs
 from zipfile import ZipFile, BadZipFile
 from rarfile import RarFile, BadRarFile
-import re
+from pdf2image import convert_from_bytes
+from PyPDF2 import PdfFileWriter, PdfFileReader
 
 class Extractor:
 
@@ -18,7 +20,6 @@ class Extractor:
             cache - the folder to store extracted/thumbnailed images"""
         if mode in self.MODE_LIST:
             self.mode = mode
-        # TODO find better cache path
         if cache_dir is None:
             self.cache = "./cache/extractPath/"
         else:
@@ -82,10 +83,34 @@ class Extractor:
             archive_rar.close()
         return extract_path
 
-    # TODO not useful at this point, will be done at the end
     def __extract_pdf(self, file):
         """ extract first image in pdf file, cache it in local cache folder"""
-        pass
+        file_ext = ".png"
+        basename = path.basename(file)
+        extract_path = "{0}{1}{2}".format(self.cache, basename, file_ext)
+        # make dir if not exist
+        if not path.exists(self.cache):
+            makedirs(self.cache)
+
+        try:
+            pdf = PdfFileReader(file,"rd")
+            # get first page
+            first_page = pdf.getPage(pageNumber=0)
+
+            pdf_writer = PdfFileWriter()
+            pdf_writer.addPage(first_page)
+
+            out = io.BytesIO()
+            pdf_writer.write(out)
+            image = convert_from_bytes(out.getvalue())
+
+            image[0].save(extract_path)
+        except Exception as e:
+            raise e
+        finally:
+            out.close()
+
+        return extract_path
 
 
     def identify_file_type(self, file):

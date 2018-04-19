@@ -99,7 +99,7 @@ def main():
         formater.format_result(result, user_wrapper.return_path)
         print("result printed")
     else:
-        print("nothing printed")
+        print("No Matches\nPrinted Nothing")
         return False
 
 

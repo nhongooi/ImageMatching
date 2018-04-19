@@ -1,6 +1,7 @@
 
 import unittest
-from os.path import isdir
+from os import remove
+from os.path import isdir, isfile
 import shutil
 from imageRecognition.util.extract import Extractor
 
@@ -23,7 +24,6 @@ class TestExtract(unittest.TestCase):
         self.assertTrue(isdir(test_cbz_extract[1]))
         # remove file after extracted
         shutil.rmtree(test_cbz_extract[1])
-        pass
 
     def test_extract_cbz(self):
         extractor = Extractor()
@@ -32,7 +32,11 @@ class TestExtract(unittest.TestCase):
         self.assertTrue(isdir(test_cbr_extract[1]))
         # remove file after extracted
         shutil.rmtree(test_cbr_extract[1])
-        pass
-    # TODO when pdf is implemented
+
     def test_extract_pdf(self):
-        pass
+        extractor = Extractor()
+        test_pdf = "./testImage/[クール教信者] 小林さんちのメイドラゴン 01_pg4.pdf"
+        test_pdf_extract = extractor.extract(test_pdf)
+        self.assertTrue(isfile(test_pdf_extract[1]))
+        # remove file after extracted
+        remove(test_pdf_extract)
