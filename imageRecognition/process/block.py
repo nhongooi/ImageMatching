@@ -7,7 +7,7 @@ from imageRecognition.util.errors import DifferentBlockCountError, NullImageErro
 
 # this whole module will be replaced with a C module to increase
 # efficiency
-def blockify(image, block_count=25):
+def blockify(image, block_count=20):
     """ Divide image into blocks x blocks matrix,
         each block pieces of the image and average
         each channel for each block
@@ -159,11 +159,11 @@ def __diff_block_color(blockA, blockB):
     diff_g = abs(gA - gB)
     diff_b = abs(bA - bB)
 
-    if diff_r > 0:
+    if diff_r > 0 and rA > 0:
         result += (diff_r / rA)
-    if diff_g > 0:
+    if diff_g > 0 and gA > 0:
         result += (diff_g / gA)
-    if diff_b > 0:
+    if diff_b > 0 and bA > 0:
         result += (diff_b / bA)
 
     return result

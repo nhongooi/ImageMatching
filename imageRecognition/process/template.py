@@ -1,7 +1,7 @@
 """ search through images if have a given template"""
 
 import cv2
-import numpy as np
+from multiprocessing import Process, Queue
 from os import path, makedirs
 from imageRecognition.util.FileUtil import open_img
 
@@ -20,8 +20,46 @@ def template_match(template_path, image_list, fuzzy=.8):
         ----------
         List of matched image path, result image with template written in cache folder"""
     match_list = []
+    jobs = []
+    image_split = []
+    procs = 4
+    image_len = len(image_list)
+    # Make sure min pics run with normally
+    run_procs = min(procs, image_len)
+    per_tick = image_len // run_procs
+    for i in range(run_procs):
+        start_tick = i * per_tick
+        end_tick = start_tick + per_tick
+        if i == (run_procs - 1):
+            image_split.append(image_list[start_tick:])
+        else:
+            image_split.append(image_list[start_tick: end_tick])
+
+
+    # queue for process to put blocks into
+    queue = Queue()
     template = cv2.imread(template_path, 0)
     check_cache_dir()
+    # prepare processes
+    for i in range(run_procs):
+        process = Process(target=__template_split,
+                          args=(template, image_split[i], queue))
+        jobs.append(process)
+    # start process and wait for processes to end
+    for j in jobs:
+        j.start()
+
+    for j in jobs:
+        match_list.extend(queue.get())
+
+    for j in jobs:
+        j.join()
+
+    return match_list
+
+
+def __template_split(template, image_list, queue):
+    match_list = []
     for image in image_list:
         img_rgb = open_img(image)
         img_grey = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
@@ -42,7 +80,8 @@ def template_match(template_path, image_list, fuzzy=.8):
             cache_path = CACHE + img_name
             cv2.imwrite(cache_path, img_rgb)
             match_list.append(cache_path)
-    return match_list
+
+    queue.put(match_list)
 
 def check_cache_dir():
     if not path.isdir(CACHE):
