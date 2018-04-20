@@ -9,6 +9,7 @@ imageRecognition/out/__init__.py
 imageRecognition/out/formater.py
 imageRecognition/process/__init__.py
 imageRecognition/process/block.py
+imageRecognition/process/hashing.py
 imageRecognition/process/template.py
 imageRecognition/test/__init__.py
 imageRecognition/test/testBlock.py

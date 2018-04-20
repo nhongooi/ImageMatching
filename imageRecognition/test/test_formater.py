@@ -5,16 +5,31 @@ from imageRecognition.out import formater
 
 class TestFormater(object):
 
-    def test_format_result(self):
+    def test_format_match(self):
         simple_result = [(["yes"],["no"], 0),
                          (["yes"],["yes"], 100)]
-        sample_path = "./"
-        filename = formater.get_resultfilename()
-        formater.format_result(simple_result, sample_path)
+        sample_path = "./result.txt"
+        formater.format_match(simple_result, sample_path)
 
-        file_path = path.join(sample_path, filename)
+        assert path.isfile(sample_path)
+        assert path.getsize(sample_path) > 0
+        remove(sample_path)
 
-        assert path.isfile(file_path)
-        assert path.getsize(file_path) > 0
+    def test_format_template(self):
+        simple_result = ["yes", "yes", "no"]
+        sample_path = "./result.txt"
+        formater.format_template(simple_result, sample_path)
 
-        remove(file_path)
+        assert path.isfile(sample_path)
+        assert path.getsize(sample_path) > 0
+        remove(sample_path)
+
+    def test_format_hashing(self):
+        simple_result = [(["yes"], ["no"]),
+                         (["yes"], ["yes"])]
+        sample_path = "./result.txt"
+        formater.format_hashing(simple_result, sample_path)
+
+        assert path.isfile(sample_path)
+        assert path.getsize(sample_path) > 0
+        remove(sample_path)

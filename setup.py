@@ -1,10 +1,11 @@
 #! /usr/bin/env python
 
 from setuptools import setup, find_packages
+from imageRecognition import __version__
 
 readme = open('README').read()
 
-VERSION = '0.1'
+VERSION = __version__
 REQUIRES_PYTHON = "==3.6"
 
 setup(
@@ -16,7 +17,9 @@ setup(
     author_email="tug56656@temple.edu",
     install_requires=['numpy',
                       'opencv-python >=3.4.0.12',
-                      'rarfile', 'docopt'],
+                      'rarfile', 'docopt',
+                      'pdf2image', 'Pypdf2',
+                      'pillow', 'imagehash'],
     python_requires=REQUIRES_PYTHON,
     classifiers=[
             "Programming Language :: Python :: 3.6",

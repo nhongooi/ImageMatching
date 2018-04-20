@@ -1,19 +1,21 @@
 
 from multiprocessing import Process, Queue
-from imageRecognition.process import block, template
+from imageRecognition.process import block, template, hashing
 from imageRecognition.util import extract, crawler, FileUtil
 
 class ImageWrapper():
     """ Wrap all image processing functionality"""
 
-    def __init__(self, imaging_type, return_path, path, search=None,
-                 template=None, fuzzy=100 ):
+    def __init__(self, imaging_type, return_path, path, search='image',
+                 template=None, fuzzy=100, hashfunc=None):
         self.type = imaging_type
         self.path = path
         self.search_filetype = search
         self.template_path = template
         self.fuzzy_percentage = fuzzy / 100
         self.return_path = return_path
+        self.hashfunc = hashfunc
+
 
     def run_wrapper(self):
         """ Runs imaging processing type"""
@@ -25,11 +27,21 @@ class ImageWrapper():
             blocks = self.__blockify_image_list(images)
             return self.__eval_image(blocks)
 
-        # UI only gave two option, so it cant be anything else
-        else:
+        elif self.type is 'Templating':
             images = self.__get_image()
             match_list = template.template_match(self.template_path, images, self.fuzzy_percentage)
             return match_list
+
+
+        elif self.type is 'Hashing':
+            if self.search_filetype == 'archive':
+                self.path = FileUtil.clean_path(self.__archive_extract())
+
+            images = self.__get_image()
+            hashes = hashing.hash_images(images, self.hashfunc)
+            return hashing.eval_hashes(hashes)
+        else:
+            return None
 
     def __archive_extract(self):
         """ Create the necessary environment to extract and return the path
@@ -161,6 +173,7 @@ class ImageWrapper():
         return compare_result
 
     def __eval_image_process(self, from_list, compare_list, queue):
+        """ single process loop for evaluating image matches"""
         result_list = []
         for imageA in from_list:
             for imageB in compare_list:
