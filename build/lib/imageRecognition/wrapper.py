@@ -32,7 +32,6 @@ class ImageWrapper():
             match_list = template.template_match(self.template_path, images, self.fuzzy_percentage)
             return match_list
 
-
         elif self.type is 'Hashing':
             if self.search_filetype == 'archive':
                 self.path = FileUtil.clean_path(self.__archive_extract())

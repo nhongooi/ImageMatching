@@ -7,7 +7,7 @@ from imageRecognition.util.FileUtil import open_img
 
 CACHE = "./cache/TemplateMatches/"
 
-def template_match(template_path, image_list, fuzzy=.8):
+def template_match(template, image_list, fuzzy=.8):
     """ Template match through each image, output a templated image if matched
 
         Parameters
@@ -38,7 +38,7 @@ def template_match(template_path, image_list, fuzzy=.8):
 
     # queue for process to put blocks into
     queue = Queue()
-    template = cv2.imread(template_path, 0)
+
     check_cache_dir()
     # prepare processes
     for i in range(run_procs):
@@ -59,6 +59,7 @@ def template_match(template_path, image_list, fuzzy=.8):
 
 
 def __template_split(template, image_list, queue):
+    template = cv2.imread(template, 0)
     match_list = []
     for image in image_list:
         img_rgb = open_img(image)
@@ -82,6 +83,7 @@ def __template_split(template, image_list, queue):
             match_list.append(cache_path)
 
     queue.put(match_list)
+
 
 def check_cache_dir():
     if not path.isdir(CACHE):

@@ -18,6 +18,7 @@ imageRecognition/test/testExtract.py
 imageRecognition/test/testTemplate.py
 imageRecognition/test/test_Fileutil.py
 imageRecognition/test/test_formater.py
+imageRecognition/test/test_hashing.py
 imageRecognition/util/FileUtil.py
 imageRecognition/util/__init__.py
 imageRecognition/util/crawler.py
