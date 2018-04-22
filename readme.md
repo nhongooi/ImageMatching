@@ -21,7 +21,6 @@ The program requires these packages:
 
 Run:
 
-::
         python3 setup.py install
 
 The python setuptool will setup the python program.
@@ -31,15 +30,15 @@ The python setuptool will setup the python program.
 ### Match		  
 
 Match image to image, regarless of size, and marked as a match if pass a the given 
-threshold, <fuzzy>, in a given <PATH>. If given type to search for, which can be  
+threshold, fuzzy, in a given PATH. If given type to search for, which can be  
 archive or image, the program will recursively search through a given directory and  
 match each found image to another image. If given an archive, images will be extracted to a 
 cache directory for matching. A result will be output with given image paths and match percentage.
 
 ### Template
 
-Find if a <template_path> is in a list of image in given <path> and will save the 
-matches with a blue box if the template reach the given threshold, <fuzzy>.   
+Find if a template_path is in a list of image in given <path> and will save the 
+matches with a blue box if the template reach the given threshold, fuzzy.   
  
 ### Hashing 
  
