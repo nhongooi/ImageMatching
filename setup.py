@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 from imageRecognition import __version__
 
-readme = open('README').read()
+readme = open('readme.md').read()
 
 VERSION = __version__
 REQUIRES_PYTHON = "==3.6"
