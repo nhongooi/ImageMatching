@@ -3,7 +3,7 @@
 A python command-line interface program to find duplicate image.
 
 It has a function to match through a directory and find all matches above a given 
-threshold.
+threshold. Every functions will use parallelism to run 4 or less processes for computation and comparing result, excluding the main process. 
 
 ## Requirements
 
@@ -23,7 +23,7 @@ Run:
 
         python3 setup.py install
 
-The python setuptool will setup the python program.
+The python setuptool will setup the python program and its depedencies.
 
 ## The type of matches:
 
@@ -73,3 +73,10 @@ Hash Functions:
     phash - perception hashing
     dhash - difference hashing
     whash - wavelet hashing
+
+## Known Bugs
+
+* The pathing for every function is for linux filesystem. So this might not work on windows.
+* Match function tends to do terrible when there is lack of diversity in color of the image. Ex: A majority white image will likely to give higher probability.
+* Template function can give wrong location of the template in some high pixel density images, when using low pixel density template
+* Template depending on resolution, it might takes up more memory than usual, but sufficient for a 32bit system and is not a concern on 64 bit.
