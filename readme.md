@@ -61,11 +61,11 @@ Usage:
 Options:
 
     -s --search=<type>                file type searched for matching, image(default) or archive
-    -f --fuzzy=<fuzzy>                 percentage match threshold, 100 is default
+    -f --fuzzy=<fuzzy>                percentage match threshold, 100 is default
     -r --return=<return>              path to print result, cwd is default
-    -a --hashfunc=<hashfunc>    choose a type of hash algorithm in list bellow
-    -h --help                                  show help
-    -v --version                              show version
+    -a --hashfunc=<hashfunc>          choose a type of hash algorithm in list bellow
+    -h --help                         show help
+    -v --version                      how version
     
 Hash Functions:
 
