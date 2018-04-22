@@ -25,7 +25,7 @@ Run:
 
 The python setuptool will setup the python program.
 
-##The type of matches:
+## The type of matches:
 
 ### Match		  
 
