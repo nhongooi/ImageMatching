@@ -15,11 +15,12 @@ setup(
     long_description= readme,
     author='Tim Nguyen',
     author_email="tug56656@temple.edu",
-    install_requires=['numpy',
-                      'opencv-python >=3.4.0.12',
+    install_requires=[
+                      'numpy', 'opencv-python',
                       'rarfile', 'docopt',
                       'pdf2image', 'Pypdf2',
-                      'pillow', 'imagehash'],
+                      'pillow', 'imagehash',
+                      ],
     python_requires=REQUIRES_PYTHON,
     classifiers=[
             "Programming Language :: Python :: 3.6",

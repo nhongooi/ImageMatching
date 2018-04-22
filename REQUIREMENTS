@@ -1,9 +1,8 @@
 numpy
-opencv-python >=3.4.0.12
-rarfile == 3.0
+opencv-python
+rarfile
 docopt
-os
-logging
-unittest
-zipfile
-curses
+pillow
+imagehash
+pdf2image
+Pypdf2
