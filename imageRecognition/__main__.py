@@ -51,7 +51,10 @@ def clean_args(args):
         process_type = PROCESS[0]
         if args['--search'] and args['--search'] in FILETYPE:
             filetype = args['--search']
+        elif not args['--search']:
+            filetype = FILETYPE[1]
         else:
+            ret = False
             print("Incorrect search type\nDefault image")
 
     elif args['template']:
@@ -71,7 +74,10 @@ def clean_args(args):
 
         if args['--search'] and args['--search'] in FILETYPE:
             filetype = args['--search']
+        elif not args['--search']:
+            filetype = FILETYPE[1]
         else:
+            ret = False
             print("Incorrect search type\nDefault image")
     else:
         print("No process\n")
